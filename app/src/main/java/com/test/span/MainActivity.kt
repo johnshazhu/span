@@ -3,7 +3,6 @@ package com.test.span
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
-import com.test.span.R
 import com.test.span.databinding.TestBinding
 import com.test.span.ui.Label
 import com.test.span.ui.setIdentityGradeSpan

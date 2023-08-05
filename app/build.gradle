@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android'
 }
 
 android {
@@ -33,12 +33,7 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
-        compose true
         viewBinding true
-        dataBinding true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.0.1'
     }
     packagingOptions {
         resources {
@@ -49,9 +44,7 @@ android {
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
