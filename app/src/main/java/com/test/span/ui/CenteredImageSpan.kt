@@ -1,5 +1,7 @@
 package com.test.span.ui
 
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -7,6 +9,8 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import java.lang.ref.WeakReference
 
 class CenteredImageSpan @JvmOverloads constructor(
@@ -18,13 +22,13 @@ class CenteredImageSpan @JvmOverloads constructor(
     private var drawableRef: WeakReference<Drawable>? = null
     private var displayOffset: Int = 0
     private var label: Label? = null
+    private var bitmap: Bitmap? = null
 
-    fun setDisplayOffset(offset: Int = 0) {
-        this.displayOffset = offset
-    }
-
-    fun setLabel(label: Label) {
+    fun setLabel(label: Label, resource: Resources) {
         this.label = label
+        if (label.resId > 0) {
+            bitmap = ResourcesCompat.getDrawable(resource, label.resId, null)?.toBitmap()
+        }
     }
 
     override fun draw(
@@ -35,12 +39,11 @@ class CenteredImageSpan @JvmOverloads constructor(
         paint: Paint
     ) {
         canvas.save()
-        var transY = 0f
         paint.fontMetrics?.let {
             val centerY = (bottom - top) / 2f
             drawable?.bounds?.let { rect ->
                 val height = (rect.bottom - rect.top)
-                transY = centerY - height / 2
+                val transY = centerY - height / 2
                 canvas.translate(x + displayOffset, transY)
             }
         }
@@ -48,9 +51,12 @@ class CenteredImageSpan @JvmOverloads constructor(
         canvas.restore()
 
         label?.run {
+            bitmap?.let {
+                canvas.drawBitmap(it, x + this.padding / 2, top + (bottom - top) / 2 - it.height / 2f, paint)
+            }
             if (!content.isNullOrEmpty()) {
                 if (contentStyle == TYPE_BOLD) {
-                    paint.setTypeface(Typeface.DEFAULT_BOLD)
+                    paint.typeface = Typeface.DEFAULT_BOLD
                 }
                 paint.textSize = contentFontSize.toFloat()
                 paint.color = Color.parseColor(contentColor)
